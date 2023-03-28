@@ -1,48 +1,18 @@
 import _ from 'lodash';
+import { buildTree } from './buildTree.js'
+import path from 'node:path';
+import fs from 'fs';
+import parse from './parse.js';
+import { renderDifference } from './buildTree.js';
+import process from 'process';
 
-const makeObject = (name, value, type, oldValue = '') => ({
-  name,
-  value,
-  type,
-  oldValue,
-});
+const buildFullPath = (filepath) => path.resolve(process.cwd(), filepath);
+const getTypeFile = (filepath) => path.extname(filepath).slice(1);
+const getData = (filepath) => parse(fs.readFileSync(filepath, 'utf-8'), getTypeFile(filepath));
 
-export const buildTree = (files) => {
-  const [file1, file2] = files;
-  const keys1 = Object.keys(file1);
-  const keys2 = Object.keys(file2);
-  const keysTogether = _.union(keys1, keys2);
-  const sortedKeys = _.sortBy(keysTogether);
-  const objects = sortedKeys.map((key) => {
-    if (!Object.hasOwn(file1, key)) {
-      return makeObject(key, file2[key], 'added');
-    }
-    if (!Object.hasOwn(file2, key)) {
-      return makeObject(key, file1[key], 'removed');
-    }
-    if (file1[key] !== file2[key]) {
-      return makeObject(key, file2[key], 'updated', file1[key]);
-    }
-    return makeObject(key, file2[key], 'unchanged');
-  });
-  return objects;
-};
-
-const symbols = {
-  removed: '-',
-  added: '+',
-  unchanged: ' ',
-};
-
-export const renderDifference = (tree) => {
-  const gendiff = tree.map((element) => {
-    const {
-      name, value, type, oldValue,
-    } = element;
-    if (type === 'updated') {
-      return `  - ${name}: ${oldValue}\n  + ${name}: ${value}`;
-    }
-    return `  ${symbols[type]} ${name}: ${value}`;
-  });
-  return `{\n${gendiff.join('\n')}\n}`;
+export const buildData = (filepath1, filepath2) => {
+const fileData1 = getData(buildFullPath(filepath1));
+const fileData2 = getData(buildFullPath(filepath2));
+const diff = buildTree(fileData1, fileData2);
+return renderDifference(diff);
 };
