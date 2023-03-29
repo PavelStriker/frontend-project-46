@@ -1,4 +1,4 @@
-import gendiff from '../src/path.js';
+import { buildData } from '../src/index.js';
 import { test, expect } from '@jest/globals';
 import path from 'path';
 import url from 'url';
@@ -14,5 +14,5 @@ const result = readFileSync(resultpath, 'utf-8');
 test('plainTest', () => {
     const filepath1 = getFixturePath('file1.json');
     const filepath2 = getFixturePath('file2.json');
-    expect(gendiff(filepath1, filepath2)).toBe(result);
+    expect(buildData(filepath1, filepath2)).toBe(result);
 });
