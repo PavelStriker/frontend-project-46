@@ -13,11 +13,10 @@ const __dirname = path.dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 
 const resultpath = getFixturePath('resultPlain.txt');
-const result = fs.readFileSync(resultpath, 'utf-8');
-
+const result = readFileSync(resultpath, 'utf-8');
 
 test('plainTest', () => {
-    const filepath1 = 'file1.json'
-    const filepath2 = 'file2.json'
-    expect(buildData(filepath1, filepath2)).toBe(result);
+  const file1 = 'file1.json';
+  const file2 = 'file2.json';
+    expect(buildData(file1, file2)).toEqual(result);
 });
