@@ -15,8 +15,14 @@ const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', 
 const resultpath = getFixturePath('resultPlain.txt');
 const result = readFileSync(resultpath, 'utf-8').trim();
 
-test('plainTest', () => {
+test('plainTestJSON', () => {
   const file1 = 'file1.json';
   const file2 = 'file2.json';
+    expect(buildData(file1, file2)).toEqual(result);
+});
+
+test('plainTestYML', () => {
+  const file1 = 'file1.yaml';
+  const file2 = 'file2.yaml';
     expect(buildData(file1, file2)).toEqual(result);
 });
